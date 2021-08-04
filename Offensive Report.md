@@ -33,7 +33,7 @@ The folllowing hosts with IP addresses, operating systems, open ports were disco
 
 Note: The option `-A` is for operating system detection and service version detection and very verbose, however it is very noisy. The snapshot below shows the exposed services on the machines using `nmap -A -sV 192.168.1.1/24` as it has a shorter output
 
-![nmap output](Images/Nmap.PNG)
+![nmap output](Images/nmap.png)
 
 ### Reconnaissance and scanning
 
