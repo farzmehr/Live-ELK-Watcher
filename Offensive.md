@@ -50,41 +50,85 @@ The screenshot below shows that the web servver uses the WordPress for content m
 ![wp-scan](Images/wp-scan.PNG)
 ### Exploitation
 
-
-
-
-
-Two users `michael` and `steven` were discovered.
-
-The first obvious guess for a password would be the same as the user and it appeared to be the case for the user `michael`. Therefore, both the username and the password are `michael`. To secure a user shell into the Target1
+Two users `michael` and `steven` were discovered. The first obvious guess for a password would be the same as the user and it appeared to be the case for the user `michael`. Therefore, both the username and the password are `michael`. To secure a user shell into the Target1
 
 `# ssh michael@192.168.1.110`
 
 Looking at the content of the wesite folder `/var/www`
 
-Two flag is found
+Hash values of two flags were found. One located in the `/var/www/html/service.html` and the other in `/var/www/flag2.txt`
 
+The value of the flag1 is :
 
-Two other flags were found in the in `wp_post` table of `WordPress` database. 
+![flag1](Images/flag1.PNG)
 
-Further, exploitable information `wp_users` table of  is found in the `WordPress` database 
+The hash value of the flag2 is
 
-To access the SQL database, 
+![flag2](Images/flag2.PNG)
 
-`mysql -u root -p'R@3nSecurity -h localhost'`
+Two other flags were found in the in `wp_posts` table of `WordPress` database.
+
+The login information to access the database is stored in the `/var/www/html/wordpress/wp.config`
+
+![wp-config](Images/wp-config.PNG)
+
+Further, exploitable information `wp-users` table of  is found in the `WordPress` database 
+
+To access the SQL database using `root` as the username, `R@3nSecurity` as the password and `localhost` as the host:
+
+`mysql -u root -p'R@3nSecurity' -h localhost`
+
+![mysql](Images/sql.PNG)
 
 `SHOW databases`
 
+![database](Images/database.PNG)
+
 `USE wordpress`
+`SELECT * FROM wp_posts`
 
-`SELECT * FROM wordpress`
-
-To query the content of the databases, 
-
-The password hases of the both `michael` and `steven` users are dound in the 'wp-users'
+![tables](Images/tables.PNG)
 
 
-The password hasesh are dumped into and cracked with the John the Ripper program and with the RockYou word list
+
+
+The value of the flag3 is :
+
+The hash value of the flag4 is
+
+![flag34](Images/flag34.PNG)
+
+The password hasses of the both `michael` and `steven` users are dound in the 'wp_users'
+
+`SELECT * FROM wp_users`
+
+![wp_users](Images/wp_users.PNG)
+
+The password hasesh are dumped into the Kali machine as `pass.txt` and cracked with the John the Ripper program
+
+`john pass.txt`
+
+![john](Images/john.PNG)
+
+The 'steven' password found to be `pink84`
+
+Login to the Target 1 machine  with 
+
+![steven](Images/steven.PNG)
+`# ssh steven@192.168.1.110`
+![steven](Images/stevn.PNG)
+
+To check the sudo privilidges of the user `steven`
+`sudo -l`
+
+The user has the privilege of running Python scipt as the root
+
+![prev](Images/prev.PNG)
+
+dfg
+
+![python](Images/python.PNG)
+
 _TODO: Fill out the details below. Include screenshots where possible._
 
 The Red Team was able to penetrate `Target 1` and retrieve the following confidential data:
@@ -98,10 +142,8 @@ The Red Team was able to penetrate `Target 1` and retrieve the following confide
       - _TODO: Identify the exploit used_
       - _TODO: Include the command run_
       
-      
-      
-
-
+     
+c
 _TODO: Fill out the information below._
 
 Nmap scan results for each machine reveal the below services and OS details:
