@@ -1,5 +1,7 @@
 # Red Team: Summary of Operations
 
+This document explains the steps of the attack and reports the vulnerabilities found within the systems.
+
 ## Table of Contents
 - Network Topology
 - Host Discovery
@@ -8,30 +10,22 @@
     - Critical Vulnerabilities
     - Exploitation
 
+
 ## Network Topology
 
-The Diagram below depicts the network topology of a subnet of `192.168.1.1/24` including an attacker Kali Linux machine an ELK-Stack monitoring system, and a few Linux Ubuntu webservers. The Kali-Linux machine is used to attack vulnerable machines on the network. The diagram below shows the network diagram, the IP addresses, and the functions of each machines.
+The Diagram below depicts the network topology of a subnet of `192.168.1.1/24` including an attacker Kali Linux machine an ELK-Stack monitoring system, and a few Linux Ubuntu web servers. The Kali-Linux machine is used to attack vulnerable machines on the network. 
 
-
+![Diagram](Images/Diagram.png)
 
 ## Scanning and Host Discovery
 
 Nmap is used to scan the `192.168.1.1/24` subnet for host discovery, operating system detection, identifying open ports and their exposed services.
 
-The following hosts with IP addresses, operating systems, open ports were discovered using 
+The hosts with IP addresses, operating systems, open ports listed in the table shown above were discovered using 
 
 `nmap -A -sV 192.168.1.1/24`
 
-| Name      | Function           | IP Address    | Public IP Address | Operating System |
-|-----------|--------------------|---------------|-------------------|---------------|
-| Jump-Box  | Gateway            | 192.168.1.1   | 125, 129, 445, 2179, 3389     | Linux Ubuntu     |
-| Web-1     | Attacker           | 192.168.1.90  | 22    | Kali Linux      |
-| ELK-server| Monitoring ELK-Stack server        | 192.168.1.100           | 22, 9200     | Linux Ubuntu     |
-| Web-2     | Web server         | 192.168.1.105 | 22, 80     | Linux Ubuntu     |
-| Web-3     | Target Web server  | 192.168.1.110 | 22, 80. 111. 139, 445     | Linux Ubuntu     |
-| ELK-server| Target Web server  | 192.168.1.115 | 22, 80. 111. 139, 445       | Linux Ubuntu     |
-
-Note: The option `-A` is for operating system detection and service version detection and very verbose, however it is very noisy. The snapshot below shows the exposed services on the machines using `nmap -sV 192.168.1.1/24` as it has a shorter output.
+Note: The option `-A` is for operating system detection and service version detection and is very verbose, however it is very noisy. The snapshot below shows the exposed services on the machines using `nmap -sV 192.168.1.1/24` as it has a shorter output.
 
 ![nmap output](Images/nmap.png)
 
@@ -39,7 +33,7 @@ Note: The option `-A` is for operating system detection and service version dete
 
 ### Reconnaissance and scanning
 
-All the public webpages on the Target 1 were visited to find any exposed sensitive information. The screenshot below shows that the web servvr uses the WordPress for content management.
+All the public webpages on the Target 1 were visited to find any exposed sensitive information. The screenshot below shows that the web server uses the WordPress for content management.
 
 ![WordPress](Images/WordPress.PNG)
 
@@ -57,11 +51,11 @@ Two users `michael` and `steven` were discovered. The first obvious guess for a 
 
 The content of the website folder `/var/www` was investigated and hash values of two flags were found. One located in the `/var/www/html/service.html` while the other in `/var/www/flag2.txt`
 
-The hash value of the flag1 is ??????????????????
+The hash value of the flag1 is `b9bbcb33ellb80be759c4e844862482d`
 
 ![flag1](Images/flag1.PNG)
 
-The hash value of the flag2 is ??????????????????
+The hash value of the flag2 is `fc3fd58dcdad9ab23faca6e9a3e581c`
 
 ![flag2](Images/flag2.PNG)
 
@@ -94,9 +88,9 @@ To use the `wordpress` database and print the content of the `wp_posts`
 
 Two other flags were found in `wp_posts` table of `wordpress` database.
 
-The hash value of the flag3 is ?????????????????
+The hash value of the flag3 is `afc01ab56b50591e7dccf93122770cd2`
 
-The hash value of the flag4 is ?????????????????????????
+The hash value of the flag4 is `715dea6c055b9fe3337544932f2941ce`
 
 ![flag34](Images/flag34.PNG)
 
@@ -113,7 +107,7 @@ The password hashes were dumped into the Kali machine as `pass.txt` and cracked 
 
 ![john](Images/john.PNG)
 
-The 'steven' password found to be `pink84`
+The `steven` password found to be `pink84`
 
 Login to the Target 1 machine with 
 
@@ -125,14 +119,27 @@ To check the sudo privileges of the user `steven`
 
 `sudo -l`
 
-
-
 ![prev](Images/prev.PNG)
 
-The user `steven` has the privilege of running Python scripts as the root. To spawn a tty Bash shell. The flag 4 is also printed after spawning the shell.
+The user `steven` has the privilege of running Python scripts as the root. To spawn a tty Bash shell
 
 `sudo python -c 'import pty; pty.spawn("/bin/bash")'`
+
+The flag 4 is also printed after spawning the shell.
 
 ![python](Images/python.PNG)
 
 ### Vulnerability assessment
+
+The following vulnerabilities were found and the Common Weakness Enumeration (CWE) were exploited during the attack
+
+| CWE-| Weakness Description                 | Consequences                           |
+|-----|--------------------------------------|----------------------------------------|
+| 521 | Weak Password Requirements           | Sensitive Information Exposure         |
+| 522 | Insufficiently Protected Credentials | Stolen password, granting a user shell |
+| 287 | Improper Authentication              | Stolen password, granting a user shell |
+
+The target runs the Apache 2.4.29 web server and WordPress 4.8.17, which both of them were outdated. There are 29 Common Vulnerabilities and Exposures (CVE) available for the Apache 2.4.29 web server. The list of all vulnerabilities are available in https://httpd.apache.org/security/vulnerabilities_24.html. CVE-2021-26691 and CVE-2019-0211 which result in heap overflow and arbitrary code execution are two examples of the sever vulnerabilities.
+The WordPress 4.8.17 vulnerabilities are available in https://www.cvedetails.com/vulnerability-list/vendor_id-2337/product_id-4096/
+CVE-2018-19296 is one of the sever vulnerabilities makes this version vulnerable to an object injection attack.
+
