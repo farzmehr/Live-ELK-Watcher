@@ -4,11 +4,12 @@ This document explains the steps of the attack and reports the vulnerabilities f
 
 ## Table of Contents
 - Network Topology
-- Host Discovery
+- Scanning and Host Discovery
 - Attacking Target 1
-    - Exposed Services
-    - Critical Vulnerabilities
+    - Reconnaissance and Scanning
     - Exploitation
+    - Vulnerability Assessment
+    - Detection Mitigation
 
 
 ## Network Topology
@@ -31,7 +32,7 @@ Note: The option `-A` is for operating system detection and service version dete
 
 ## Attacking Target 1
 
-### Reconnaissance and scanning
+### Reconnaissance and Scanning
 
 All the public webpages on the Target 1 were visited to find any exposed sensitive information. The screenshot below shows that the web server uses the WordPress for content management.
 
@@ -129,7 +130,7 @@ The flag 4 is also printed after spawning the shell.
 
 ![python](Images/python.PNG)
 
-### Vulnerability assessment
+### Vulnerability Assessment
 
 The following vulnerabilities were found and the Common Weakness Enumeration (CWE) were exploited during the attack
 
