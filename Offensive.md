@@ -9,24 +9,22 @@ This document explains the steps of the attack and reports the vulnerabilities f
     - Reconnaissance and Scanning
     - Exploitation
     - Vulnerability Assessment
-    - Detection Mitigation
-
 
 ## Network Topology
 
-The Diagram below depicts the network topology of a subnet of `192.168.1.1/24` including an attacker Kali Linux machine an ELK-Stack monitoring system, and a few Linux Ubuntu web servers. The Kali-Linux machine is used to attack vulnerable machines on the network. 
+The diagram below depicts the network topology of a subnet of `192.168.1.1/24` including an attacker Kali Linux machine, an ELK-Stack monitoring system, and three Linux web servers. The Kali Linux machine is used to attack the vulnerable machines on the network. 
 
 ![Diagram](Images/Diagram.png)
 
 ## Scanning and Host Discovery
 
-Nmap is used to scan the `192.168.1.1/24` subnet for host discovery, operating system detection, identifying open ports and their exposed services.
+Nmap is used to scan the `192.168.1.1/24` subnet for host discovery, operating system detection, and identifying open ports and their exposed services.
 
 The hosts with IP addresses, operating systems, open ports listed in the table shown above were discovered using 
 
 `nmap -A -sV 192.168.1.1/24`
 
-Note: The option `-A` is for operating system detection and service version detection and is very verbose, however it is very noisy. The snapshot below shows the exposed services on the machines using `nmap -sV 192.168.1.1/24` as it has a shorter output.
+Note: The option `-A` is for operating system and service version detection and is very verbose, however, it is very noisy. The snapshot below shows the exposed services on the machines using `nmap -sV 192.168.1.1/24` as it has a shorter output.
 
 ![nmap output](Images/nmap.png)
 
@@ -50,7 +48,7 @@ Two users `michael` and `steven` were discovered. The first obvious guess for a 
 
 `ssh michael@192.168.1.110`
 
-The content of the website folder `/var/www` was investigated and hash values of two flags were found. One located in the `/var/www/html/service.html` while the other in `/var/www/flag2.txt`
+The content of the website folder `/var/www` was investigated and the hash values of two flags were found. One located in the `/var/www/html/service.html` and the other in `/var/www/flag2.txt`
 
 The hash value of the flag1 is `b9bbcb33ellb80be759c4e844862482d`
 
@@ -140,7 +138,7 @@ The following vulnerabilities were found and the Common Weakness Enumeration (CW
 | 522 | Insufficiently Protected Credentials | Stolen password, granting a user shell |
 | 287 | Improper Authentication              | Stolen password, granting a user shell |
 
-The target runs the Apache 2.4.29 web server and WordPress 4.8.17, which both of them were outdated. There are 29 Common Vulnerabilities and Exposures (CVE) available for the Apache 2.4.29 web server. The list of all vulnerabilities are available in https://httpd.apache.org/security/vulnerabilities_24.html. CVE-2021-26691 and CVE-2019-0211 which result in heap overflow and arbitrary code execution are two examples of the sever vulnerabilities.
+The target runs the Apache 2.4.29 web server and WordPress 4.8.17, which both of them were outdated. There are 29 Common Vulnerabilities and Exposures (CVE) available for the Apache 2.4.29 web server. The list of all vulnerabilities is available in https://httpd.apache.org/security/vulnerabilities_24.html. CVE-2021-26691 and CVE-2019-0211 which result in heap overflow and arbitrary code execution are two examples of the severe vulnerabilities.
 The WordPress 4.8.17 vulnerabilities are available in https://www.cvedetails.com/vulnerability-list/vendor_id-2337/product_id-4096/
-CVE-2018-19296 is one of the sever vulnerabilities makes this version vulnerable to an object injection attack.
+CVE-2018-19296 is one of the severe vulnerabilities makes this version vulnerable to an object injection attack.
 
